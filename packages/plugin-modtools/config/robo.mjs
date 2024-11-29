@@ -1,5 +1,7 @@
 // @ts-check
 
+import { Partials } from 'discord.js'
+
 /**
  * @type {import('robo.js').Config}
  **/
@@ -13,8 +15,11 @@ export default {
 			'GuildBans',
 			'GuildMessages',
 			'GuildModeration',
-			'MessageContent'
-		]
+			'MessageContent',
+			'GuildMembers'
+		],
+		partials: [Partials.Channel, Partials.Message, Partials.GuildMember]
+
 	},
 	invite: {
 		autoPermissions: false,
