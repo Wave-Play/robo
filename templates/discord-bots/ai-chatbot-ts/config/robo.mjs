@@ -1,7 +1,7 @@
 // @ts-check
 
 /**
- * @type {import('@roboplay/robo.js').Config}
+ * @type {import('robo.js').Config}
  **/
 export default {
 	clientOptions: {

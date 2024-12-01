@@ -1,5 +1,16 @@
 # @roboplay/plugin-ai
 
+## 0.5.7
+
+### Patch Changes
+
+- 5a08d2a: refactor: cleaner debug logs
+- 204ec0c: patch: account for unnecessary @ in function calls
+- 6893fad: patch: mock entitlements in interaction
+- Updated dependencies [1b84f8e]
+  - robo.js@0.10.26
+  - @robojs/server@0.6.2
+
 ## 0.5.6
 
 ### Patch Changes

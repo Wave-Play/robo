@@ -3,6 +3,7 @@ import type { FlashcoreAdapter } from '../types/index.js'
 
 declare global {
 	var robo: {
+		config: Config | null
 		flashcore: {
 			_adapter: FlashcoreAdapter
 		}

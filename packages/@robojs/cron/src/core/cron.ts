@@ -1,5 +1,5 @@
 import { cronLogger } from './loggers.js'
-import { IS_BUN } from './utils.js'
+import { IS_BUN_RUNTIME } from './utils.js'
 import fs from 'node:fs'
 import path from 'node:path'
 import { pathToFileURL } from 'node:url'
@@ -34,7 +34,7 @@ class CronJob {
 			let absolutePath = path.resolve(path.join(process.cwd(), '.robo', 'build', jobPath))
 			cronLogger.debug(`Executing cron job handler: ${color.bold(jobPath)}`)
 
-			if (!fs.existsSync(absolutePath) && absolutePath.endsWith('.js') && IS_BUN) {
+			if (!fs.existsSync(absolutePath) && absolutePath.endsWith('.js') && IS_BUN_RUNTIME) {
 				absolutePath = absolutePath.replace(/\.js$/, '.ts')
 			}
 

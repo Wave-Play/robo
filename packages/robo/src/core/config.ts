@@ -1,10 +1,11 @@
 import { Config } from '../types/index.js'
+import { Mode } from './mode.js'
+import { Compiler } from '../cli/utils/compiler.js'
+import { Globals } from './globals.js'
 import { logger } from './logger.js'
 import fs, { existsSync } from 'node:fs'
 import path from 'node:path'
 import { pathToFileURL } from 'node:url'
-import { Mode } from './mode.js'
-import { Compiler } from '../cli/utils/compiler.js'
 
 // Global config reference
 let _config: Config = null
@@ -15,7 +16,7 @@ const _configPaths: Set<string> = new Set()
  * May return null if config has yet to load. Use {@link loadConfig} to load it first.
  */
 export function getConfig(): Config | null {
-	return _config
+	return Globals.getConfig() ?? _config
 }
 
 /**
@@ -58,6 +59,7 @@ export async function loadConfig(file = 'robo', compile = false): Promise<Config
 	}
 
 	_config = config
+	Globals.registerConfig(config)
 	logger.debug(`Loaded configuration file:`, config)
 	return config
 }

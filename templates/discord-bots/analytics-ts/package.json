@@ -23,7 +23,7 @@
 		"upgrade": "sage upgrade"
 	},
 	"dependencies": {
-		"@robojs/analytics": "link:/Users/pkmmte/Documents/GitHub/robo/packages/@robojs/analytics",
+		"@robojs/analytics": "^0.1.1",
 		"discord.js": "^14.16.3",
 		"robo.js": "^0.10.20"
 	},

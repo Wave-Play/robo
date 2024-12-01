@@ -4,9 +4,7 @@
 
 # Discord Bot - MongoDB (TS)
 
-Welcome to your fresh **[Robo.js](https://github.com/Wave-Play/robo)** project!
-
-Build, deploy, and maintain your Discord activities with ease. With Robo.js as your guide, you'll experience a seamless, [file-based setup](https://docs.roboplay.dev/docs/basics/overview#the-robojs-file-structure), an [integrated database](https://docs.roboplay.dev/docs/basics/flashcore), [TypeScript support](https://docs.roboplay.dev/docs/advanced/typescript), and a multitude of [plugin-powered skills](https://docs.roboplay.dev/docs/advanced/plugins) to unlock along the way.
+Starter **Discord Bot** built with **[Robo.js](https://robojs.dev)** showing how to use **MongoDB** as a database. Includes **/create-user** and **/list-users** slash commands as examples, as well as graceful shutdowns.
 
 _Ready to embark on this adventure?_
 

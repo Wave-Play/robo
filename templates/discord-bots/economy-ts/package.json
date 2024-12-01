@@ -17,8 +17,8 @@
 		"start": "robo start"
 	},
 	"dependencies": {
-		"@roboplay/robo.js": "^0.9.26",
-		"discord.js": "^14.16.2"
+		"discord.js": "^14.16.2",
+		"robo.js": "^0.10.26"
 	},
 	"devDependencies": {
 		"@swc/core": "^1.7.26",

@@ -13,8 +13,7 @@ import { Compiler } from '../../utils/compiler.js'
 import { Flashcore, prepareFlashcore } from '../../../core/flashcore.js'
 import { bold, color } from '../../../core/color.js'
 import { buildPublicDirectory } from '../../utils/public.js'
-import { discordLogger, FLASHCORE_KEYS, Highlight } from '../../../core/constants.js'
-import { IS_BUN } from '../../utils/runtime-utils.js'
+import { discordLogger, FLASHCORE_KEYS } from '../../../core/constants.js'
 import type { LoggerOptions } from '../../../core/logger.js'
 
 const command = new Command('build')
@@ -53,15 +52,6 @@ export async function buildAction(files: string[], options: BuildCommandOptions)
 	logger.debug('CLI options:', options)
 	logger.debug(`Current working directory:`, process.cwd())
 	const startTime = Date.now()
-
-	// Check for `bunx --bun` to ensure Bun is being used correctly
-	// @ts-expect-error - Bun is a global variable
-	if (IS_BUN && typeof Bun === "undefined") {
-		const command = '> bunx --bun robo ' + process.argv.slice(2).join(' ')
-		logger.error(`Please use "bunx --bun" to use Bun.`)
-		logger.error(Highlight(command), '\n')
-		process.exit(1)
-	}
 
 	// Make sure the user isn't trying to watch builds
 	// This only makes sense for plugins anyway

@@ -1,5 +1,15 @@
 name: Preview Any Commit
-on: [push, pull_request]
+on:
+  push:
+    paths:
+      - '.changeset/**'
+      - 'packages/**'
+      - 'pnpm-lock.yaml'
+  pull_request:
+    paths:
+      - '.changeset/**'
+      - 'packages/**'
+      - 'pnpm-lock.yaml'
 
 jobs:
   build:

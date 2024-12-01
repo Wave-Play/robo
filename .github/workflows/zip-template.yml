@@ -1,0 +1,53 @@
+name: 'Zip template'
+on:
+  push:
+    paths:
+      - 'templates/**'
+    branches:
+      - main
+
+jobs:
+  Templates:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repo
+        uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 8.6.11
+
+      - name: Install Zip
+        run: sudo apt-get install zip unzip
+
+      - name: Set up Backblaze B2 CLI
+        run: |
+          # Download Backblaze B2 CLI
+          curl -L -o b2 https://github.com/Backblaze/B2_Command_Line_Tool/releases/download/v4.2.0/b2-linux
+          chmod +x b2
+          sudo mv b2 /usr/local/bin/b2
+
+      - name: Authorize Backblaze B2 Account
+        run: |
+          b2 authorize-account ${{ secrets.B2_ACCOUNT_ID }} ${{ secrets.B2_APPLICATION_KEY }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          cache: 'pnpm'
+          node-version: 20
+          registry-url: 'https://registry.npmjs.org'
+
+      - name: Install dependencies
+        working-directory: scripts
+        run: pnpm install
+
+      - name: Zip commit
+        working-directory: scripts
+        env:
+          B2_BUCKET: ${{ secrets.B2_BUCKET }}
+          GH_PUSH: ${{ toJson(github.event) }}
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+          REPO_DATA: ${{ github.repository }}
+          ROBO_LOG_LEVEL: ${{ secrets.ROBO_LOG_LEVEL }}
+        run: pnpm run zip

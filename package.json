@@ -22,7 +22,8 @@
 			"packages/plugin-poll",
 			"packages/plugin-sync",
 			"packages/robo",
-			"packages/sage"
+			"packages/sage",
+			"scripts"
 		]
 	},
 	"engines": {

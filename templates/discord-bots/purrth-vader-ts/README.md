@@ -4,9 +4,7 @@
 
 # Discord Bot - Purrth Vader (TS)
 
-Welcome to your fresh **[Robo.js](https://github.com/Wave-Play/robo)** project!
-
-Build, deploy, and maintain your Discord activities with ease. With Robo.js as your guide, you'll experience a seamless, [file-based setup](https://docs.roboplay.dev/docs/basics/overview#the-robojs-file-structure), an [integrated database](https://docs.roboplay.dev/docs/basics/flashcore), [TypeScript support](https://docs.roboplay.dev/docs/advanced/typescript), and a multitude of [plugin-powered skills](https://docs.roboplay.dev/docs/advanced/plugins) to unlock along the way.
+Starter **Discord Bot** with a purr-fectly adorable name built with **[Robo.js](https://robojs.dev)**. This template uses **[@robojs/ai](https://robojs.dev/plugins/ai)** to create a user-installable AI companion you can chat with in any server. All you need is an **OpenAI** API key in your `.env` file.
 
 _Ready to embark on this adventure?_
 

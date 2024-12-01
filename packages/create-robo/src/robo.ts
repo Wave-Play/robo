@@ -1058,16 +1058,16 @@ export default class Robo {
 
 	/**
 	 * Bun is special. Bun is love. Bun is life.
-	 * Bun requires `bunx --bun ` as a prefix before every `robo` and `sage` command.
+	 * Bun requires `bun --bun` as a prefix before every `robo` and `sage` command.
 	 */
 	public async bun(): Promise<void> {
-		// Go over every script in the package.json and add `bunx --bun ` before it
+		// Go over every script in the package.json and add `bun --bun ` before it
 		const scripts = Object.entries(this._packageJson.scripts)
 		logger.debug(`Adapting ${scripts.length} scripts for Bun...`)
 
 		for (const [key, value] of scripts) {
 			if (value.startsWith('robo') || value.startsWith('sage')) {
-				this._packageJson.scripts[key] = `bunx --bun ${value}`
+				this._packageJson.scripts[key] = `bun --bun ${value}`
 			}
 		}
 

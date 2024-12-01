@@ -37,7 +37,8 @@ export function getPackageExecutor(): string {
 	}
 }
 
-export const IS_BUN = getPackageManager() === 'bun'
+export const IS_BUN_PM = getPackageManager() === 'bun'
+export const IS_BUN_RUNTIME = process.versions.bun
 
 /**
  * Reads the package.json file and returns whether the given dependency is installed.

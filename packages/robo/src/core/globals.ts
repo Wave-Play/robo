@@ -1,10 +1,25 @@
-import { Collection } from 'discord.js'
-import type { FlashcoreAdapter } from '../types/index.js'
-import type { Api, Command, Context, Event, HandlerRecord, Middleware } from '../types/index.js'
+import type {
+	Api,
+	Command,
+	Config,
+	Context,
+	Event,
+	FlashcoreAdapter,
+	HandlerRecord,
+	Middleware
+} from '../types/index.js'
+import type { Collection } from 'discord.js'
 
 const instanceId = Math.random().toString(36).slice(2)
 
 export const Globals = {
+	getConfig: () => {
+		if (!globalThis.robo) {
+			Globals.init()
+		}
+
+		return globalThis.robo.config
+	},
 	getFlashcoreAdapter: () => {
 		if (!globalThis.robo) {
 			Globals.init()
@@ -28,6 +43,7 @@ export const Globals = {
 	},
 	init: () => {
 		globalThis.robo = {
+			config: null,
 			flashcore: {
 				_adapter: null
 			},
@@ -42,6 +58,13 @@ export const Globals = {
 		}
 	},
 	instanceId,
+	registerConfig: (config: Config) => {
+		if (!globalThis.robo) {
+			Globals.init()
+		}
+
+		globalThis.robo.config = config
+	},
 	registerFlashcore: (adapter: FlashcoreAdapter) => {
 		if (!globalThis.robo) {
 			Globals.init()

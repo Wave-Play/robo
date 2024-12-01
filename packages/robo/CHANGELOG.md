@@ -1,5 +1,11 @@
 # robo.js
 
+## 0.10.26
+
+### Patch Changes
+
+- 1b84f8e: fix(runtime): decouple Bun runtime from PM detection
+
 ## 0.10.25
 
 ### Patch Changes

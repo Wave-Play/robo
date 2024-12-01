@@ -10,7 +10,7 @@ import { logger } from '../../core/logger.js'
 import path from 'node:path'
 import os from 'node:os'
 import { fileURLToPath, pathToFileURL } from 'node:url'
-import { IS_BUN } from './runtime-utils.js'
+import { IS_BUN_PM } from './runtime-utils.js'
 import type { Pod } from '../../roboplay/types.js'
 import { existsSync } from 'node:fs'
 
@@ -211,7 +211,7 @@ export async function findPackagePath(packageName: string, currentPath: string):
 
 	let packagePath: string | null = null
 
-	if (isPnpmModules && !IS_BUN) {
+	if (isPnpmModules && !IS_BUN_PM) {
 		logger.debug(`Found pnpm node_modules folder for ${packageName}`)
 		try {
 			const { stdout } = await execAsync(`pnpm list ${packageName} --json`, { cwd: currentPath })

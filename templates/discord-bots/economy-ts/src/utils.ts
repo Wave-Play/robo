@@ -1,5 +1,5 @@
 // imports
-import { Flashcore } from '@roboplay/robo.js'
+import { Flashcore } from 'robo.js'
 import { Snowflake } from 'discord.js'
 
 /**

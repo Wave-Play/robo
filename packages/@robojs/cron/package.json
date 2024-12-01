@@ -48,7 +48,7 @@
 		"uuid": "^10.0.0"
 	},
 	"peerDependencies": {
-		"robo.js": "^0.10.25"
+		"robo.js": "^0.10.26"
 	},
 	"peerDependenciesMeta": {
 		"robo.js": {

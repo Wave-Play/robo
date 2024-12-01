@@ -1,5 +1,5 @@
 // imports
-import type { CommandConfig } from '@roboplay/robo.js'
+import type { CommandConfig } from 'robo.js'
 import { CommandInteraction } from 'discord.js'
 import { sharePlayerMoney } from '../utils.js'
 

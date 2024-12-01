@@ -1,6 +1,6 @@
 import { color, composeColors } from './color.js'
 import { logger } from './logger.js'
-import { IS_BUN } from '../cli/utils/runtime-utils.js'
+import { IS_BUN_RUNTIME } from '../cli/utils/runtime-utils.js'
 import type { Config } from '../types/index.js'
 
 export const Highlight = composeColors(color.bold, color.cyan)
@@ -12,7 +12,7 @@ export const cloudflareLogger = logger.fork('cloudflare')
 export const discordLogger = logger.fork('discord')
 
 // TODO: Test support for ['.js', '.jsx', '.ts', '.tsx'] in Bun
-export const ALLOWED_EXTENSIONS = IS_BUN ? ['.js', '.jsx', '.ts', '.tsx'] : ['.js', '.jsx']
+export const ALLOWED_EXTENSIONS = IS_BUN_RUNTIME ? ['.js', '.jsx', '.ts', '.tsx'] : ['.js', '.jsx']
 
 export const DEFAULT_CONFIG: Config = {
 	clientOptions: null,

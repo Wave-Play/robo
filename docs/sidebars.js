@@ -218,9 +218,9 @@ const sidebars = {
 			},
 			items: [
 				{
-					id: 'templates/overview',
+					type: 'link',
 					label: '✨ Overview',
-					type: 'doc'
+					href: '/templates'
 				},
 				{
 					type: 'category',

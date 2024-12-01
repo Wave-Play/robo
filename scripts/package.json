@@ -1,0 +1,23 @@
+{
+	"name": "robo-scripts",
+	"version": "1.0.0",
+	"private": true,
+	"description": "Scripts for the Robo.js monorepo.",
+	"type": "module",
+	"scripts": {
+		"zip": "tsx zip"
+	},
+	"author": "WavePlay <dev@waveplay.com> (waveplay.com)",
+	"contributors": [
+		"Alexandre <sushi@waveplay.com>",
+		"Pkmmte Xeleon <pk@waveplay.com>"
+	],
+	"license": "MIT",
+	"dependencies": {
+		"robo.js": "^0.10.26"
+	},
+	"devDependencies": {
+		"tsx": "^4.19.2",
+		"typescript": "^5.7.2"
+	}
+}

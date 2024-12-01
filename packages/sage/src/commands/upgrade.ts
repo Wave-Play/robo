@@ -2,7 +2,7 @@ import { PackageJson } from './../core/types.js'
 import { findPackagePath } from 'robo.js/dist/cli/utils/utils.js'
 import { Command } from 'commander'
 import { logger } from '../core/logger.js'
-import { checkSageUpdates, checkUpdates, exec, getPackageManager } from '../core/utils.js'
+import { checkSageUpdates, checkUpdates, exec, getPackageManager, IS_WINDOWS } from '../core/utils.js'
 import { loadConfig } from 'robo.js/dist/core/config.js'
 import { prepareFlashcore } from 'robo.js/dist/core/flashcore.js'
 import { color, composeColors } from '../core/color.js'
@@ -14,6 +14,7 @@ import { Config, Plugin } from 'robo.js'
 
 const command = new Command('upgrade')
 	.description('Upgrades your Robo to the latest version')
+	.option('-y --yes', 'installs updates without showing changelogs')
 	.option('-f --force', 'forcefully install')
 	.option('-ns --no-self-check', 'do not check for updates to Sage CLI')
 	.option('-s --silent', 'do not print anything')
@@ -22,6 +23,7 @@ const command = new Command('upgrade')
 export default command
 
 interface UpgradeOptions {
+	autoAccept?: boolean
 	force?: boolean
 	selfCheck?: boolean
 	silent?: boolean
@@ -56,7 +58,7 @@ async function upgradeAction(options: UpgradeOptions) {
 	const update = await checkUpdates(packageJson, config, true)
 	logger.debug(`Update payload:`, update)
 
-	await updateRobo(plugins, config)
+	await updateRobo(plugins, config, options.autoAccept)
 }
 
 interface Changelog {
@@ -222,12 +224,12 @@ type PluginToUpdate = { data: { name: string; extra: ChangelogUpdate } }
 
 const CustomSeparator = '----- 🎉 -----'
 
-async function updateRobo(plugins: Plugin[], config: Config) {
+async function updateRobo(plugins: Plugin[], config: Config, autoAccept?: boolean) {
 	const u_options: Array<Separator | Choice<string>> = []
-	const hasUpdate: string[] = []
+	const hasUpdate: (string | PluginToUpdate)[] = []
 
 	for (const plugin of plugins) {
-		const plugingName = plugin[0]
+		const plugingName = IS_WINDOWS ? plugin[0].replaceAll('\\', '/') : plugin[0]
 		const packagePath = await findPackagePath(plugingName, process.cwd())
 		logger.debug('Checking updates for', color.bold(plugingName), 'at path', color.bold(packagePath))
 
@@ -239,13 +241,23 @@ async function updateRobo(plugins: Plugin[], config: Config) {
 
 		const pluginOnRegistry = await fetch(`https://registry.npmjs.org/${packageJson.name}/latest`)
 		if (!pluginOnRegistry.ok) {
-			logger.info(composeColors(color.yellowBright, color.bold)(`Skipping ${plugingName}, not found on registry, probably local plugin!`))
+			logger.info(
+				composeColors(
+					color.yellowBright,
+					color.bold
+				)(`Skipping ${plugingName}, not found on registry, probably local plugin!`)
+			)
 			continue
 		}
 
 		// Skip if no updates
 		if (!update.hasUpdate) {
 			logger.info(composeColors(color.green, color.bold)(`${plugingName} is up to date!`))
+			continue
+		}
+
+		if (autoAccept && update.hasUpdate) {
+			hasUpdate.push({ data: { name: plugingName, extra: { ...update, name: '' } } })
 			continue
 		}
 
@@ -281,8 +293,14 @@ async function updateRobo(plugins: Plugin[], config: Config) {
 		logger.log('')
 	}
 
+	if (autoAccept) {
+		await upgradeSelectedPlugins(hasUpdate as PluginToUpdate[])
+		logger.info(composeColors(color.green, color.bold)(`Your Robo is up to date!`))
+		return
+	}
+
 	if (u_options.length > 0) {
-		await showListOfPlugins(u_options, hasUpdate)
+		await showListOfPlugins(u_options, hasUpdate as string[])
 	} else {
 		logger.info(composeColors(color.green, color.bold)(`Your Robo is up to date!`))
 	}
@@ -404,7 +422,7 @@ async function showChangelogList(
 	}
 }
 
-async function upgradeSelectedPlugins(selectedPlugins: Array<PluginToUpdate>) {
+async function upgradeSelectedPlugins(selectedPlugins: Array<PluginToUpdate>, autoAccept?: boolean) {
 	const packageManager = getPackageManager()
 	const command = packageManager === 'npm' ? 'install' : 'add'
 	logger.debug(`Package manager:`, packageManager)
@@ -416,12 +434,13 @@ async function upgradeSelectedPlugins(selectedPlugins: Array<PluginToUpdate>) {
 	await exec(`${packageManager} ${command} ${pluginStringFromArray}`)
 
 	// Check what needs to be changed
+
 	for (const plugin of selectedPlugins) {
 		const { extra, name } = plugin.data
 		const data = await check(name, extra.latestVersion)
 		logger.debug(`Check data:`, data)
 
-		if (data.breaking.length > 0 || data.suggestions.length > 0) {
+		if (data.breaking.length > 0 || (data.suggestions.length > 0 && !autoAccept)) {
 			// Let user choose which changes to apply
 			const changes = await checkbox({
 				message: 'Which changes would you like to apply?',
@@ -436,7 +455,7 @@ async function upgradeSelectedPlugins(selectedPlugins: Array<PluginToUpdate>) {
 			await execute(changes)
 		}
 
-		logger.ready(`Successfully upgraded ${plugin.data.name} to v${plugin.data.extra.latestVersion}! 🎉`)
+		logger.ready(`Successfully upgraded ${name} to v${extra.latestVersion}! 🎉`)
 	}
 }
 

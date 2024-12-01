@@ -1,5 +1,13 @@
 # @roboplay/sage
 
+## 0.6.13
+
+### Patch Changes
+
+- 1a0c503: patch(doctor): import updated env manager
+- Updated dependencies [1b84f8e]
+  - robo.js@0.10.26
+
 ## 0.6.12
 
 ### Patch Changes

@@ -23,7 +23,7 @@ import { bold, color } from '../../core/color.js'
 import { ALLOWED_EXTENSIONS } from '../../core/constants.js'
 import { Mode } from '../../core/mode.js'
 import { Compiler } from './compiler.js'
-import { IS_BUN } from './runtime-utils.js'
+import { IS_BUN_RUNTIME } from './runtime-utils.js'
 import type { PermissionsString } from 'discord.js'
 
 // TODO:
@@ -446,7 +446,7 @@ async function generateEntries<T>(
 				logger.debug(`[${type}] Generating`, fileKeys, 'from', fullPath)
 				const isGenerated = generatedKeys.includes(fileKeys.join('/'))
 				let importPath = pathToFileURL(fullPath).toString()
-				if (IS_BUN) {
+				if (IS_BUN_RUNTIME) {
 					importPath = decodeURIComponent(importPath)
 				}
 				const module = await import(importPath)

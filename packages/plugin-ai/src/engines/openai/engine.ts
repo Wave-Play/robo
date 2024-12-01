@@ -21,7 +21,7 @@ import type {
 } from '@/engines/base.js'
 import type { AssistantData } from '@/engines/openai/assistant.js'
 import type { File, Message } from '@/engines/openai/types.js'
-import type { Command } from 'robo.js'
+import type { Command, CommandEntry } from 'robo.js'
 
 const DEFAULT_MODEL = 'gpt-4o'
 
@@ -92,7 +92,7 @@ export class OpenAiEngine extends BaseEngine {
 					const runs = await openai.listRuns({
 						thread_id: thread.id
 					})
-					logger.debug(`Runs for thread "${color.bold(thread.id)}":`, runs)
+					logger.debug(`Runs for thread "${color.bold(thread.id)}":`, runs?.data?.length)
 
 					// Cancel any active runs
 					const activeRuns = runs?.data?.filter((run) => ['in_progress', 'requires_action'].includes(run.status))
@@ -141,7 +141,10 @@ export class OpenAiEngine extends BaseEngine {
 						run_id: run.id,
 						thread_id: thread.id
 					})
-					logger.debug(`Run status for "${color.bold(run.id)}":`, run)
+					logger.debug(`Run status for "${color.bold(run.id)}":`, run?.status)
+					if (run?.status && run.status !== 'in_progress') {
+						logger.debug(`Run details for "${color.bold(run.id)}":`, run)
+					}
 
 					if (run.status === 'completed') {
 						// TODO: Paginate via "before" cursor + message cache
@@ -520,7 +523,7 @@ async function loadFunctions() {
 	})
 
 	portal?.commands
-		.filter((command) => {
+		.filter((command: CommandEntry) => {
 			// Only allow commands enabled in the plugin options
 			if (Array.isArray(pluginOptions.commands)) {
 				return whitelistedCommands.includes(command.key.replaceAll('/', ' '))
@@ -528,7 +531,7 @@ async function loadFunctions() {
 				return !!pluginOptions.commands
 			}
 		})
-		.forEach((command) => {
+		.forEach((command: CommandEntry) => {
 			const commandParameters: ChatFunctionParameters = {
 				type: 'object',
 				required: [],

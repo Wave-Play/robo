@@ -592,16 +592,16 @@ const config = {
 						position: 'left',
 						label: 'Docs'
 					},
-					{ to: '/hosting/overview', label: 'Hosting', position: 'left' },
-					{ to: '/playground', label: 'Playground', position: 'left' },
-					{ to: '/plugins/directory', label: 'Plugins', position: 'left' },
-					{ to: '/ref/framework', label: 'Reference', position: 'left' },
-					{ to: '/templates/overview', label: 'Templates', position: 'left' },
 					{
 						href: 'https://dev.to/waveplay',
-						label: 'Tutorials',
+						label: 'Guides',
 						position: 'left'
 					},
+					{ to: '/hosting/overview', label: 'Hosting', position: 'left' },
+					{ to: '/plugins/directory', label: 'Plugins', position: 'left' },
+					{ to: '/ref/framework', label: 'Reference', position: 'left' },
+					{ to: '/templates', label: 'Templates', position: 'left' },
+					{ to: '/playground', label: 'Try It', position: 'left' },
 					/*{
 						href: 'https://roboplay.dev/hacktoberfest',
 						label: '✨🎃 Hacktoberfest 🎃✨',

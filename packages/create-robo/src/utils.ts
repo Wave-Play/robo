@@ -146,6 +146,8 @@ export function getPackageManager(): PackageManager {
 	}
 }
 
+export const IS_BUN_RUNTIME = process.versions.bun
+
 export function getPackageExecutor(): string {
 	const packageManager = getPackageManager()
 	if (packageManager === 'yarn') {

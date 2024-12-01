@@ -1,4 +1,4 @@
-import { IS_BUN } from '../cli/utils/runtime-utils.js'
+import { IS_BUN_RUNTIME } from '../cli/utils/runtime-utils.js'
 import { logger } from './logger.js'
 import { existsSync, readFileSync } from 'node:fs'
 import { readFile } from 'node:fs/promises'
@@ -246,7 +246,7 @@ function applyEnv(options: LoadOptions, newEnvVars: Record<string, string>) {
 
 function getFilePath(options: LoadOptions): string | null {
 	// No need to load .env file if using Bun (it's already loaded)
-	if (IS_BUN) {
+	if (IS_BUN_RUNTIME) {
 		return null
 	}
 

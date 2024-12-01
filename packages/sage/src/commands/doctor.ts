@@ -5,7 +5,7 @@ import { color, composeColors } from '../core/color.js'
 import { logger } from '../core/logger.js'
 import { checkSageUpdates, getPackageManager } from '../core/utils.js'
 
-import { loadEnv } from 'robo.js/dist/core/dotenv.js'
+import { Env } from 'robo.js/dist/core/env.js'
 import { loadConfig } from 'robo.js/dist/core/config.js'
 
 const command = new Command('doctor')
@@ -32,7 +32,7 @@ async function doctorAction(options: DoctorOptions) {
 		await checkSageUpdates()
 	}
 
-	loadEnv({ sync: true })
+	Env.loadSync()
 	const config = await loadConfig()
 
 	// Group and run checks

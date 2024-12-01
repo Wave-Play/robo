@@ -1,5 +1,5 @@
 // imports
-import { MiddlewareData } from '@roboplay/robo.js'
+import { MiddlewareData } from 'robo.js'
 import type { ChatInputCommandInteraction, Client } from 'discord.js'
 import { createPlayerProfile, getPlayerProfile } from '../utils.js'
 

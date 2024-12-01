@@ -14,4 +14,5 @@ export function getPackageManager(): PackageManager {
 	}
 }
 
-export const IS_BUN = getPackageManager() === 'bun'
+export const IS_BUN_PM = getPackageManager() === 'bun'
+export const IS_BUN_RUNTIME = process.versions.bun

@@ -3,7 +3,7 @@ import path from 'path'
 import { copyDir, hasProperties, replaceSrcWithBuildInRecord } from './utils.js'
 import { logger } from '../../core/logger.js'
 import { env } from '../../core/env.js'
-import { IS_BUN } from './runtime-utils.js'
+import { IS_BUN_RUNTIME } from './runtime-utils.js'
 import { getManifest, useManifest } from '../compiler/manifest.js'
 import { buildSeed, hasSeed, useSeed } from '../compiler/seed.js'
 import { buildDeclarationFiles, getTypeScriptCompilerOptions, isTypescriptProject } from '../compiler/typescript.js'
@@ -21,7 +21,7 @@ async function preloadTypescript() {
 	try {
 		// Disable Typescript compiler(s) if using Bun, unless for plugin builds
 		// This is because plugins may be used in any runtime environment (not just Bun)
-		if (!IS_BUN) {
+		if (!IS_BUN_RUNTIME) {
 			logger.debug(`Preloading Typescript compilers...`)
 			const [typescript, swc] = await Promise.all([import('typescript'), import('@swc/core')])
 			ts = typescript.default
@@ -162,7 +162,7 @@ async function buildCode(options?: BuildCodeOptions) {
 		: path.join(process.cwd(), '.robo', 'build')
 
 	// Force load compilers for Bun in plugin builds
-	if (IS_BUN && options?.plugin) {
+	if (IS_BUN_RUNTIME && options?.plugin) {
 		await preloadTypescript()
 	}
 

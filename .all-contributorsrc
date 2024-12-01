@@ -60,7 +60,8 @@
       "contributions": [
         "example",
         "plugin",
-        "doc"
+        "doc",
+        "code"
       ]
     },
     {
@@ -68,6 +69,15 @@
       "name": "waru",
       "avatar_url": "https://avatars.githubusercontent.com/u/156133757?v=4",
       "profile": "https://github.com/waruhachi",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "renejfc",
+      "name": "René",
+      "avatar_url": "https://avatars.githubusercontent.com/u/60465053?v=4",
+      "profile": "https://github.com/renejfc",
       "contributions": [
         "code"
       ]
