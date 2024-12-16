@@ -1,5 +1,6 @@
 // @ts-check
 
+
 /**
  * @type {import('robo.js').Config}
  **/
@@ -13,8 +14,9 @@ export default {
 			'GuildBans',
 			'GuildMessages',
 			'GuildModeration',
-			'MessageContent'
-		]
+			'MessageContent',
+			'GuildMembers'
+		],
 	},
 	invite: {
 		autoPermissions: false,

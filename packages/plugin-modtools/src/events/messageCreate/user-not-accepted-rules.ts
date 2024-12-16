@@ -9,6 +9,14 @@ export default async (interaction: Message) => {
 	const member = interaction.member as GuildMember
 	const rolestring = await Flashcore.get(`member-role`, { namespace: interaction.guild!.id })
 
+	if (!rolestring) {
+		return 
+	}
+
+	if (!interaction.guild.roles.cache.some((role) => role.name === rolestring)) {
+		logger.warn(`can not find role "${rolestring}". try running the set-member-role command`)
+	}
+
 	if (member.roles.cache.some((role) => role.name === rolestring) || member.permissions.has('Administrator')) {
 		return
 	} else {
