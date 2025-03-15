@@ -5,6 +5,8 @@ export interface Option {
 	alias: string
 	name: string
 	description: string
+	acceptsMultipleValues?: boolean
+	returnArray?: boolean // Should default to false
 }
 
 export class Command {
@@ -123,8 +125,14 @@ export class Command {
 	 * @param {string} description - Option description.
 	 * @returns {Command} - Returns the current Command object for chaining.
 	 */
-	public option(alias: string, name: string, description: string): this {
-		this._options.push({ alias, name, description })
+	public option(
+		alias: string,
+		name: string,
+		description: string,
+		acceptsMultipleValues: boolean = false,
+		returnArray: boolean = false
+	): this {
+		this._options.push({ alias, name, description, acceptsMultipleValues, returnArray })
 		return this
 	}
 
@@ -189,55 +197,57 @@ export class Command {
 	 * @param {string[]} args - The arguments array.
 	 * @returns {Record<string, unknown>} - Returns an object containing parsed options.
 	 */
-	private parseOptions(args: string[]): Record<string, unknown> {
+	private parseOptions(args: string[]): { options: Record<string, unknown>; positionalArgs: string[] } {
 		const options: Record<string, unknown> = {}
+		const positionalArgs: string[] = []
 		let i = 0
 
 		while (i < args.length) {
 			const arg = args[i]
 
-			if (arg.startsWith('--')) {
-				const option = this._options.find((opt) => opt.name === arg)
-				if (option) {
-					if (this._allowSpacesInOptions && i + 1 < args.length && !args[i + 1].startsWith('-')) {
-						let value = args[i + 1]
-						i += 2 // Move past the option and its value
-						while (i < args.length && !args[i].startsWith('-')) {
-							value += ` ${args[i]}`
-							i++
-						}
-						options[arg.slice(2)] = value
-					} else {
-						options[arg.slice(2)] = true
-						i++
-					}
-				} else {
-					i++
-				}
+			if (arg === '--') {
+				i++ // Skip the '--' separator
+				break
 			} else if (arg.startsWith('-')) {
-				const option = this._options.find((opt) => opt.alias === arg)
+				// Handle options
+				const option = this._options.find((opt) => opt.name === arg || opt.alias === arg)
 				if (option) {
-					if (this._allowSpacesInOptions && i + 1 < args.length && !args[i + 1].startsWith('-')) {
-						let value = args[i + 1]
-						i += 2 // Move past the option and its value
-						while (i < args.length && !args[i].startsWith('-')) {
-							value += ` ${args[i]}`
+					i++ // Move past the option
+					if (option.acceptsMultipleValues) {
+						const values: string[] = []
+						while (i < args.length && !args[i].startsWith('-') && args[i] !== '--') {
+							values.push(args[i])
 							i++
 						}
-						options[option.name.slice(2)] = value
+						if (option.returnArray) {
+							options[option.name.slice(2)] = values
+						} else {
+							options[option.name.slice(2)] = values.join(' ')
+						}
+					} else if (this._allowSpacesInOptions && i < args.length && !args[i].startsWith('-') && args[i] !== '--') {
+						options[option.name.slice(2)] = args[i]
+						i++ // Move past the value
 					} else {
 						options[option.name.slice(2)] = true
-						i++
 					}
 				} else {
+					// Unrecognized option, skip it or handle as per your requirements
 					i++
 				}
 			} else {
+				// Positional argument
+				positionalArgs.push(arg)
 				i++
 			}
 		}
 
-		return options
+		// After '--', treat all remaining arguments as positional
+		while (i < args.length) {
+			positionalArgs.push(args[i])
+			i++
+		}
+
+		return { options, positionalArgs }
 	}
 
 	private async processSubCommand(command: Command, args: string[]) {
@@ -247,81 +257,34 @@ export class Command {
 			return
 		}
 
-		const positionalArgs: string[] = []
-		let optionsArgsStart = args.length
+		const { options, positionalArgs } = command.parseOptions(args)
 
-		for (let i = 0; i < args.length; i++) {
-			const arg = args[i]
+		if (options.help) {
+			command.showHelp()
+			return
+		}
 
-			// Check if arg is an option
-			if (arg.startsWith('-')) {
-				optionsArgsStart = i
-				break
-			}
+		if (command._version && (options.version || options.v)) {
+			console.log(command._version)
+			process.exit(0)
+		}
 
-			// If arg is prefixed with 'arg:', treat as a positional argument
-			if (arg.startsWith('arg:')) {
-				positionalArgs.push(arg.slice(4))
-				continue
-			}
-
-			// Check if arg is a subcommand
-			const subCommand = command._commands.find((cmd) => cmd._name === arg)
+		// Process subcommands if any
+		if (positionalArgs.length > 0) {
+			const subCommandName = positionalArgs[0]
+			const subCommand = command._commands.find((cmd) => cmd._name === subCommandName)
 			if (subCommand) {
-				const { positionalArgs: subPosArgs, optionsArgs: subOptArgs } = this.splitArgs(args.slice(i + 1))
-				this.processSubCommand(subCommand, [...subPosArgs, ...subOptArgs])
+				await subCommand.processSubCommand(subCommand, positionalArgs.slice(1))
 				return
-			}
-
-			// If arg is not an option or a subcommand, treat as a positional argument
-			positionalArgs.push(arg)
-
-			// if _positionalArgs is false show a message to inform the user.
-			if (!command._positionalArgs) {
+			} else if (!command._positionalArgs) {
 				logger.log('\n')
-				logger.error(color.red(`The command "${arg}" does not exist.`))
+				logger.error(color.red(`The command "${subCommandName}" does not exist.`))
 				logger.info(`Try ${color.bold(color.blue('robo --help'))} to see all available commands.`)
 				logger.log('\n')
 				return
 			}
 		}
 
-		const optionsArgs = args.slice(optionsArgsStart)
-		const parsedOptions = command.parseOptions(optionsArgs)
-
-		if (parsedOptions.help) {
-			command.showHelp()
-			return
-		}
-
-		// If the current command has a version, and the user has provided the version flag, display the version and exit.
-		if (command._commands.length && command._version && (args.includes('-v') || args.includes('--version'))) {
-			console.log(command._version)
-			process.exit(0)
-		}
-
-		await command._handler(positionalArgs, parsedOptions)
-	}
-
-	private splitArgs(args: string[]): { positionalArgs: string[]; optionsArgs: string[] } {
-		const positionalArgs: string[] = []
-		let optionsArgsStart = args.length
-
-		for (let i = 0; i < args.length; i++) {
-			const arg = args[i]
-
-			// Check if arg is an option
-			if (arg.startsWith('-')) {
-				optionsArgsStart = i
-				break
-			}
-
-			// If arg is not an option, treat as a positional argument
-			positionalArgs.push(arg)
-		}
-
-		const optionsArgs = args.slice(optionsArgsStart)
-
-		return { positionalArgs, optionsArgs }
+		await command._handler(positionalArgs, options)
 	}
 }
