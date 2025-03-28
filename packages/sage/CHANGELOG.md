@@ -1,5 +1,12 @@
 # @roboplay/sage
 
+## 0.7.2
+
+### Patch Changes
+
+- Updated dependencies [60ce5c4]
+  - robo.js@0.10.31
+
 ## 0.7.1
 
 ### Patch Changes

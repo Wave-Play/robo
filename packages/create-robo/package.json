@@ -1,6 +1,6 @@
 {
 	"name": "create-robo",
-	"version": "0.14.10",
+	"version": "0.14.11",
 	"private": false,
 	"description": "Launch epic projects with Robo.js — effortless, powerful, complete!",
 	"engines": {

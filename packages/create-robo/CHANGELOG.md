@@ -1,5 +1,13 @@
 # create-robo
 
+## 0.14.11
+
+### Patch Changes
+
+- ede2da1: chore: improved .env comments
+- Updated dependencies [60ce5c4]
+  - robo.js@0.10.31
+
 ## 0.14.10
 
 ### Patch Changes
